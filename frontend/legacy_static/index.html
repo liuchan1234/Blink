@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<!-- Blink.MBTI UI v4.5 · aligned with PRD v2.8 · March 2026 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>BLINK — Emotional System v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div class="stars-field" id="stars"></div>
+
+<div class="app">
+
+<!-- S1 LANDING -->
+<section class="screen active" id="s-landing">
+
+  <!-- Language Switcher -->
+  <div class="lang-switcher" id="langSwitcher">
+    <button class="lang-btn active" id="langEN" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="langRU" onclick="setLang('ru')">RU</button>
+  </div>
+  <div class="nebula" style="width:320px;height:320px;background:radial-gradient(circle,rgba(88,28,220,0.18),transparent);top:-100px;left:-100px;--d:7s;--lo:.4;--hi:.7;--dl:0s;"></div>
+  <div class="nebula" style="width:260px;height:260px;background:radial-gradient(circle,rgba(109,40,217,0.1),transparent);bottom:140px;right:-80px;--d:9s;--lo:.3;--hi:.55;--dl:-4s;"></div>
+
+  <div class="land-brand">✦ &nbsp;Blink.MBTI &nbsp;✦</div>
+
+  <div class="geo-wrap">
+    <!-- Deep holographic halo — sits BEHIND everything -->
+    <div class="geo-halo"></div>
+    <!-- Inner core pulse -->
+    <div class="geo-glow nebula pulse-el" style="position:absolute;inset:24%;border-radius:50%;background:radial-gradient(circle,rgba(110,70,210,0.39),rgba(175,80,125,0.21) 50%,transparent 72%);--d:4s;--lo:.35;--hi:.7;--dl:0s;filter:blur(22px);z-index:2;pointer-events:none;"></div>
+    <svg viewBox="0 0 240 240" fill="none" style="position:absolute;inset:0;width:100%;height:100%;z-index:3;">
+      <defs>
+        <filter id="glow-violet" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-ice" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-platinum" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="1.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Outer dashed orbit -->
+      <g class="spin-cw" style="--dur:28s;">
+        <circle cx="120" cy="120" r="110" stroke="rgba(255,255,255,0.05)" stroke-width="0.75" stroke-dasharray="3 8"/>
+      </g>
+      <!-- Hexagram — violet only -->
+      <g class="spin-ccw" style="--dur:20s;" filter="url(#glow-violet)">
+        <polygon points="120,22 198,158 42,158" stroke="rgba(120,80,220,0.28)" stroke-width="1" fill="none"/>
+        <polygon points="120,218 42,82 198,82" stroke="rgba(120,80,220,0.28)" stroke-width="1" fill="none"/>
+        <circle cx="120" cy="120" r="72" stroke="rgba(120,80,220,0.10)" stroke-width="0.75" fill="none"/>
+      </g>
+      <!-- Inner ring -->
+      <g class="spin-cw" style="--dur:12s;">
+        <circle cx="120" cy="120" r="38" stroke="rgba(110,70,210,0.23)" stroke-width="1" fill="none"/>
+      </g>
+      <!-- Core — scale breathing 0.8→1.2 -->
+      <g filter="url(#glow-platinum)">
+        <circle cx="120" cy="120" r="10" fill="rgba(120,80,220,0.10)" stroke="rgba(200,180,255,0.5)" stroke-width="1" class="pulse-el" style="--d:3.5s;--lo:.4;--hi:.9;--dl:0s;"/>
+        <circle cx="120" cy="120" r="3.5" fill="rgba(220,210,255,0.95)" class="core-breathe"/>
+      </g>
+    </svg>
+  </div>
+
+  <h1 class="land-title">Who are you<br><span>when you love?</span></h1>
+
+  <div class="z1 mt-8" style="width:100%;">
+    <button class="btn-primary" onclick="go('s-info')">Read me →</button>
+    <!-- Feature pills -->
+    <div class="land-pills">
+      <div class="land-pill">⏱ 2 min</div>
+      <div class="land-pill">❓ 10 questions</div>
+      <div class="land-pill">✦ GPT-5</div>
+    </div>
+    <div class="result-cta-hint" style="margin-top:14px;">
+      <span id="socialProof">193,842</span> readings done
+    </div>
+  </div>
+</section>
+
+<!-- S2 INFO -->
+<section class="screen" id="s-info">
+  <!-- Context banner: shown only when redirected from Dual screen without a code -->
+  <div id="pendingDualBanner" style="display:none; align-items:center; gap:10px; margin:0 0 16px; padding:10px 14px; background:rgba(120,80,220,0.12); border:1px solid rgba(120,80,220,0.25); border-radius:12px; font-size:13px; color:rgba(255,255,255,0.75); font-family:var(--f-sans); line-height:1.5;">
+    <span style="font-size:16px;">🔮</span>
+    <span>Complete your profile first — we'll bring you back to the match screen.</span>
+  </div>
+  <div class="page-tag">Profile</div>
+  <h2 class="page-title">A few things<br>about you</h2>
+
+  <!-- Gender -->
+  <div class="field-group">
+    <div class="field-label">Gender</div>
+    <div class="chips-row">
+      <div class="chip" onclick="selChip(this,'g')">Male 👦</div>
+      <div class="chip sel" onclick="selChip(this,'g')">Female 👧</div>
+      <div class="chip" onclick="selChip(this,'g')">Other ✨</div>
+    </div>
+  </div>
+
+  <!-- Date of Birth + inline zodiac after month -->
+  <div class="field-group">
+    <div class="field-label">Birth Year &amp; Zodiac</div>
+    <div class="selects-row" style="margin-bottom:14px;">
+      <div class="sel-wrap">
+        <select id="birthYear"></select>
+      </div>
+    </div>
+    <div class="zodiac-selector" id="zodiacSelector">
+      <div class="zodiac-chip" data-sign="aries"       data-sym="♈" onclick="selZodiac(this)"><span class="z-sym">♈</span><span class="z-name">Aries</span></div>
+      <div class="zodiac-chip" data-sign="taurus"      data-sym="♉" onclick="selZodiac(this)"><span class="z-sym">♉</span><span class="z-name">Taurus</span></div>
+      <div class="zodiac-chip" data-sign="gemini"      data-sym="♊" onclick="selZodiac(this)"><span class="z-sym">♊</span><span class="z-name">Gemini</span></div>
+      <div class="zodiac-chip" data-sign="cancer"      data-sym="♋" onclick="selZodiac(this)"><span class="z-sym">♋</span><span class="z-name">Cancer</span></div>
+      <div class="zodiac-chip" data-sign="leo"         data-sym="♌" onclick="selZodiac(this)"><span class="z-sym">♌</span><span class="z-name">Leo</span></div>
+      <div class="zodiac-chip" data-sign="virgo"       data-sym="♍" onclick="selZodiac(this)"><span class="z-sym">♍</span><span class="z-name">Virgo</span></div>
+      <div class="zodiac-chip" data-sign="libra"       data-sym="♎" onclick="selZodiac(this)"><span class="z-sym">♎</span><span class="z-name">Libra</span></div>
+      <div class="zodiac-chip" data-sign="scorpio"     data-sym="♏" onclick="selZodiac(this)"><span class="z-sym">♏</span><span class="z-name">Scorpio</span></div>
+      <div class="zodiac-chip" data-sign="sagittarius" data-sym="♐" onclick="selZodiac(this)"><span class="z-sym">♐</span><span class="z-name">Sagitt.</span></div>
+      <div class="zodiac-chip" data-sign="capricorn"   data-sym="♑" onclick="selZodiac(this)"><span class="z-sym">♑</span><span class="z-name">Capric.</span></div>
+      <div class="zodiac-chip" data-sign="aquarius"    data-sym="♒" onclick="selZodiac(this)"><span class="z-sym">♒</span><span class="z-name">Aquarius</span></div>
+      <div class="zodiac-chip" data-sign="pisces"      data-sym="♓" onclick="selZodiac(this)"><span class="z-sym">♓</span><span class="z-name">Pisces</span></div>
+    </div>
+  </div>
+
+  <!-- Past Relationships — Slider -->
+  <div class="field-group">
+    <div class="field-label flex-between">
+      <span>Past Relationships</span>
+      <span id="relLabel" class="rel-label">None</span>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="relSlider" class="rel-slider" min="0" max="3" value="0" step="1" oninput="updateSlider(this)">
+      <div class="slider-ticks">
+        <span>0</span><span>1–2</span><span>3–5</span><span>6+</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-40 pb-4">
+    <button class="btn-primary" onclick="goFromInfo()">Continue →</button>
+  </div>
+</section>
+
+
+<!-- S3 EMOTION -->
+<section class="screen" id="s-emotion">
+  <div class="page-tag">Right now</div>
+  <h2 class="page-title">Where are you<br>emotionally?</h2>
+  <p class="emotion-subtitle">It colors how you answer today.</p>
+
+  <div class="emotion-grid">
+    <div class="emotion-card" data-color="purple" onclick="selEmotion(this)">
+      <div class="emotion-emoji">🔮</div>
+      <div class="emotion-title">Open &amp; Ready</div>
+      <div class="emotion-sub">Excited for something new</div>
+    </div>
+    <div class="emotion-card sel" data-color="pink" onclick="selEmotion(this)">
+      <div class="emotion-emoji">💘</div>
+      <div class="emotion-title">Deeply in Love</div>
+      <div class="emotion-sub">Head and heart both in</div>
+    </div>
+    <div class="emotion-card" data-color="blue" onclick="selEmotion(this)">
+      <div class="emotion-emoji">🌫️</div>
+      <div class="emotion-title">It's Complicated</div>
+      <div class="emotion-sub">Push and pull energy</div>
+    </div>
+    <div class="emotion-card" data-color="teal" onclick="selEmotion(this)">
+      <div class="emotion-emoji">🌧️</div>
+      <div class="emotion-title">Healing Mode</div>
+      <div class="emotion-sub">Taking time for myself</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- S3 QUIZ -->
+<section class="screen" id="s-quiz">
+  <div class="quiz-top">
+    <div class="quiz-meta">
+      <span class="quiz-num" id="quizNum">Q1 / 10</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-fill" id="quizProgress" style="width:10%"></div>
+    </div>
+  </div>
+
+  <!-- Question card -->
+  <div class="quiz-card">
+    <div class="quiz-q" id="quizQ">I can tell something's off with my partner before they say a word.</div>
+  </div>
+
+  <!-- Crystal orb matrix + labels — grouped together -->
+  <div class="orb-section">
+    <div class="orb-matrix" id="orbScale">
+      <div class="orb-group">
+        <div class="orb orb-lg agree" onclick="pickOrb(this)" title="Strongly Agree"></div>
+        <div class="orb orb-md agree" onclick="pickOrb(this)" title="Agree"></div>
+        <div class="orb orb-sm agree" onclick="pickOrb(this)" title="Slightly Agree"></div>
+      </div>
+      <div class="orb-gap"></div>
+      <div class="orb-group">
+        <div class="orb orb-sm disagree" onclick="pickOrb(this)" title="Slightly Disagree"></div>
+        <div class="orb orb-md disagree" onclick="pickOrb(this)" title="Disagree"></div>
+        <div class="orb orb-lg disagree" onclick="pickOrb(this)" title="Strongly Disagree"></div>
+      </div>
+    </div>
+    <div class="orb-label-row">
+      <span class="orb-lbl agree-lbl">Agree</span>
+      <span class="orb-lbl disagree-lbl">Disagree</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- Particle burst canvas (shared, fixed overlay) -->
+<canvas id="orbBurst"></canvas>
+
+<!-- S4 LOADING -->
+<section class="screen" id="s-loading">
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+
+  <div class="loading-geo">
+    <svg viewBox="0 0 180 180" fill="none">
+      <g class="spin-cw" style="--dur:18s;"><circle cx="90" cy="90" r="82" stroke="rgba(139,92,246,0.3)" stroke-width="1" stroke-dasharray="3 6"/></g>
+      <g class="spin-ccw" style="--dur:12s;">
+        <polygon points="90,14 152,122 28,122" stroke="rgba(180,80,130,0.30)" stroke-width="1.5" fill="none"/>
+        <polygon points="90,166 28,58 152,58" stroke="rgba(180,80,130,0.30)" stroke-width="1.5" fill="none"/>
+      </g>
+      <g class="spin-cw" style="--dur:7s;"><circle cx="90" cy="90" r="30" stroke="rgba(212,255,0,0.5)" stroke-width="1.5" fill="none"/></g>
+      <circle cx="90" cy="90" r="8" fill="rgba(139,92,246,0.7)" class="pulse-el" style="--d:2s;--lo:.4;--hi:.9;--dl:0s;"/>
+      <circle cx="90" cy="90" r="3" fill="rgba(212,255,0,1)"/>
+    </svg>
+  </div>
+
+  <div class="loading-phase" id="loadPhase">Analyzing attachment patterns…</div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar-track"><div class="loading-bar-fill" id="loadBar"></div></div>
+    <div class="loading-pct" id="loadPct">0%</div>
+  </div>
+  <div class="load-steps-row" id="loadSteps">
+    <div class="load-step" id="ls0">✦ Memory</div>
+    <div class="load-step" id="ls1">✦ Signature</div>
+    <div class="load-step" id="ls2">✦ Energy</div>
+    <div class="load-step" id="ls3">✦ Story</div>
+  </div>
+</section>
+
+<!-- S5 RESULT -->
+<section class="screen" id="s-result">
+
+  <!-- HERO: MBTI type + attachment badge -->
+  <div class="result-hero">
+    <div class="type-letters result-mbti">INFP</div>
+    <div class="type-poetic result-poetic-name">The Grounded Rose</div>
+    <div class="attachment-badge">
+      <div class="attachment-dot"></div>
+      <span class="attachment-type result-attachment">ANXIOUS</span>
+      <span class="attachment-label">· Attachment Style</span>
+    </div>
+  </div>
+
+  <div class="result-body">
+
+    <!-- Attachment style card — high prominence -->
+    <div class="attachment-card">
+      <div class="attachment-card-icon">🔗</div>
+      <div class="attachment-card-body">
+        <div class="attachment-card-label">Attachment Style</div>
+        <div class="attachment-card-type result-attachment">ANXIOUS</div>
+        <div class="attachment-card-desc result-one-line">You love deeply — and quietly wonder if it's ever enough.</div>
+      </div>
+    </div>
+
+    <!-- Personality description -->
+    <div class="result-desc-card">
+      <p class="result-desc result-description">You feel everything deeply but keep it hidden. You crave soul-level connection — and when you love, you love completely.</p>
+    </div>
+
+    <!-- Stats row -->
+    <div class="result-stats">
+      <div class="result-stat">
+        <div class="result-stat-lbl">Same Type</div>
+        <div class="result-stat-val txt-infp result-same-type-val">2,847</div>
+        <div class="result-stat-sub result-same-type-sub">12.8% of users</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-lbl">Emotional IQ</div>
+        <div class="result-stat-val txt-accent result-eq-val">94%</div>
+        <div class="result-stat-sub">Above average</div>
+      </div>
+      <div class="result-stat brd-purple-light">
+        <div class="result-stat-lbl">Soul Match</div>
+        <div class="result-stat-val result-soul-match-mbti" style="color:var(--c-enfj-light);">ENFJ</div>
+        <div class="result-stat-sub result-soul-match-name">The Protagonist</div>
+      </div>
+    </div>
+
+    <!-- Primary CTA -->
+    <button class="btn-primary" onclick="go('s-detail')">Full Report →</button>
+    <div class="result-cta-hint">Deep Analysis · Emotional Radar · Compatibility</div>
+
+    <!-- Personal code + share actions -->
+    <div class="share-zone">
+      <div class="code-action-row">
+        <div class="code-display">
+          <div class="code-display-val" id="myCode">BLINK-7K3M2P</div>
+        </div>
+        <button class="code-copy-btn" id="copyBtn" onclick="copyCode()">
+          <span id="copyBtnTxt">Copy</span>
+        </button>
+        <button class="icon-btn tg-icon-btn" onclick="tgShare()" title="Share to Telegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.613c-.144.655-.54.812-1.094.506l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L7.48 14.618l-2.95-.924c-.641-.2-.654-.641.136-.948l11.532-4.448c.533-.194 1.001.13.828.95h-.464z"/></svg>
+        </button>
+        <button class="icon-btn poster-icon-btn" onclick="openPoster()" title="Generate Poster">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Retake test CTA -->
+    <button class="btn-retake" onclick="retakeQuiz()">↺ Retake Test</button>
+
+    <!-- Social proof + Open Blink CTA -->
+    <div class="open-blink-strip">
+      <div class="open-blink-left">
+        <div class="open-blink-dot"></div>
+        <div class="open-blink-text">
+          <div class="open-blink-count"><strong id="openBlinkCount">6,203</strong> people match your type</div>
+          <div class="open-blink-sub"><strong id="openBlinkPct">6.1%</strong> are sharing their code right now</div>
+        </div>
+      </div>
+      <button class="open-blink-btn" onclick="tgShare()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.613c-.144.655-.54.812-1.094.506l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L7.48 14.618l-2.95-.924c-.641-.2-.654-.641.136-.948l11.532-4.448c.533-.194 1.001.13.828.95h-.464z"/></svg>
+        Open Blink
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- COMPAT MODAL -->
+<div class="compat-modal-overlay" id="compatModal">
+  <div class="compat-modal">
+    <div class="compat-modal-handle"></div>
+
+    <!-- Phase 1: Confirm + Pay -->
+    <div class="cm-confirm" id="cmConfirm">
+      <div class="cm-confirm-pair">
+        <div class="cm-type-badge a" id="cmBadgeA">????</div>
+        <div class="cm-conn">💜</div>
+        <div class="cm-type-badge b" id="cmBadgeB">????</div>
+      </div>
+      <!-- poetic names shown after lookup resolves -->
+      <div class="cm-poetic-names" id="cmPoeticNames" style="display:none;">
+        <span class="cm-poetic-a" id="cmPoeticA"></span>
+        <span class="cm-poetic-sep"> × </span>
+        <span class="cm-poetic-b" id="cmPoeticB"></span>
+      </div>
+      <div class="cm-confirm-title">Deep Compatibility Reading</div>
+      <div class="cm-confirm-sub">Analyze your emotional patterns,<br>attachment styles, and love dynamics.</div>
+
+      <div class="cm-trust-row">
+        <div class="cm-trust-badge">
+          <span class="cm-trust-text">✦ GPT-5</span>
+          <span class="cm-trust-dot"></span>
+          <span class="cm-trust-count">3,241 readings done</span>
+        </div>
+      </div>
+
+      <div class="cm-price-row">
+        <div class="cm-price-badge"><span class="cm-star-icon">⭐</span>50 Stars</div>
+        <div class="cm-price-divider"></div>
+        <div class="cm-price-note">one-time payment<br>takes ~60s</div>
+      </div>
+
+      <button class="cm-confirm-btn" onclick="startCompatAnalysis()">Unlock Reading →</button>
+      <button class="cm-cancel-btn" onclick="closeCompatModal()">Cancel</button>
+    </div>
+
+    <!-- Phase 2: Loading / Generating -->
+    <div class="cm-loading" id="cmLoading" style="display:none">
+      <div class="cm-loading-orb"></div>
+      <div class="cm-loading-title">Analyzing your connection</div>
+      <div class="cm-loading-phase" id="cmPhase">Reading emotional patterns…</div>
+      <div class="cm-loading-bar-track">
+        <div class="cm-loading-bar-fill" id="cmBar"></div>
+      </div>
+      <div class="cm-loading-pct" id="cmPct">0%</div>
+      <div class="cm-steps">
+        <div class="cm-step" id="cmStep0"><div class="cm-step-dot"></div>Mapping emotional memory</div>
+        <div class="cm-step" id="cmStep1"><div class="cm-step-dot"></div>Analyzing attachment patterns</div>
+        <div class="cm-step" id="cmStep2"><div class="cm-step-dot"></div>Modeling relationship dynamics</div>
+        <div class="cm-step" id="cmStep3"><div class="cm-step-dot"></div>Generating your reading</div>
+      </div>
+    </div>
+
+    <!-- Phase 2b: Error / Retry (shown on generation failure) -->
+    <div class="cm-retry" id="cmRetry" style="display:none;flex-direction:column;align-items:center;padding:32px 24px;gap:16px;">
+      <div style="font-size:32px;">⚠️</div>
+      <div class="cm-retry-msg" style="text-align:center;color:rgba(255,255,255,0.7);font-size:14px;line-height:1.5;">Generation timed out.</div>
+      <button class="cm-confirm-btn" onclick="retryCompatAnalysis()" style="margin-top:8px;">Retry — Free →</button>
+      <button class="cm-cancel-btn" onclick="closeCompatModal()">Cancel</button>
+    </div>
+
+    <!-- Phase 3 result is shown on the Report page -->
+
+  </div>
+</div>
+
+<!-- Poster overlay sheet -->
+<div class="poster-overlay" id="posterOverlay" onclick="closePoster(event)">
+  <div class="poster-sheet" id="posterSheet">
+    <div class="poster-handle"></div>
+    <div class="poster-preview-wrap">
+      <canvas id="posterCanvas" width="750" height="1125"></canvas>
+    </div>
+    <div class="poster-save-hint">
+      <span class="poster-hint-icon">💾</span>
+      <span>Long press the image to save · Or tap the button below</span>
+    </div>
+    <button class="poster-dl-btn" onclick="downloadPoster()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13M5 16l7 7 7-7"/><path d="M3 21h18"/></svg>
+      Save to Photos
+    </button>
+    <button class="poster-close-btn" onclick="closePosterDirect()">Close</button>
+  </div>
+</div>
+
+<!-- S6 DETAIL -->
+<section class="screen" id="s-detail">
+
+  <!-- Page header -->
+  <div class="detail-hero">
+    <div class="detail-type">INFP</div>
+    <div class="detail-name">The Grounded Rose</div>
+    <div class="detail-attach">
+      <span class="detail-attach-dot"></span>
+      <span>Anxious · Attachment Style</span>
+    </div>
+  </div>
+
+  <!-- Tab switcher -->
+  <div class="tabs-row">
+    <button class="tab-btn active" onclick="switchTab(this,'rat')">Analysis</button>
+    <button class="tab-btn" onclick="switchTab(this,'let')">Love Letter</button>
+  </div>
+
+  <div id="tab-rat" class="tab-panel">
+
+    <!-- YOUR PROFILE: stats + radar combined -->
+    <div class="profile-section mb-14">
+      <div class="profile-section-head">Your Profile</div>
+      <div class="profile-section-inner">
+        <div class="mini-grid" style="margin-bottom:0;">
+          <div class="mini-card brd-purple-light">
+            <div class="mini-lbl">SAME TYPE</div>
+            <div class="mini-val txt-infp">2,847</div>
+            <div class="mini-sub">12.8% of users</div>
+          </div>
+          <div class="mini-card brd-accent-light">
+            <div class="mini-lbl">EMOTIONAL IQ</div>
+            <div class="mini-val txt-accent">94%</div>
+            <div class="mini-sub">Above average</div>
+          </div>
+        </div>
+        <div class="escan-card escan-card--bare">
+          <div class="escan-header">
+            <div class="escan-title">Emotional Scan</div>
+            <!-- archetype: v2.0 预留，v1.0 不展示 -->
+          </div>
+          <div class="escan-body">
+            <canvas id="radarCanvas" width="160" height="160"></canvas>
+            <div class="escan-legend">
+              <div class="escan-leg-item">
+                <span class="escan-dot escan-dot--depth"></span>
+                <span class="escan-leg-label">Depth</span>
+                <div class="escan-leg-bar-wrap"><div class="escan-leg-bar" style="width:82%;background:#A78BFA;"></div></div>
+                <span class="escan-leg-val">82</span>
+              </div>
+              <div class="escan-leg-item">
+                <span class="escan-dot escan-dot--guard"></span>
+                <span class="escan-leg-label">Guard</span>
+                <div class="escan-leg-bar-wrap"><div class="escan-leg-bar" style="width:65%;background:#60B8CC;"></div></div>
+                <span class="escan-leg-val">65</span>
+              </div>
+              <div class="escan-leg-item">
+                <span class="escan-dot escan-dot--heat"></span>
+                <span class="escan-leg-label">Heat</span>
+                <div class="escan-leg-bar-wrap"><div class="escan-leg-bar" style="width:48%;background:#C87A8A;"></div></div>
+                <span class="escan-leg-val">48</span>
+              </div>
+              <div class="escan-leg-item">
+                <span class="escan-dot escan-dot--heal"></span>
+                <span class="escan-leg-label">Heal</span>
+                <div class="escan-leg-bar-wrap"><div class="escan-leg-bar" style="width:38%;background:#5EC487;"></div></div>
+                <span class="escan-leg-val">38</span>
+              </div>
+              <div class="escan-leg-item">
+                <span class="escan-dot escan-dot--read"></span>
+                <span class="escan-leg-label">Read</span>
+                <div class="escan-leg-bar-wrap"><div class="escan-leg-bar" style="width:91%;background:#FBBF24;"></div></div>
+                <span class="escan-leg-val">91</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soul Match — enlarged standalone -->
+    <div class="match-card mb-20">
+      <div class="match-title">✦ SOUL MATCH</div>
+      <div class="match-pair">
+        <div class="match-chip">ENFJ</div>
+        <div class="match-heart">💜</div>
+        <div class="match-desc">
+          <strong>The Protagonist</strong>
+          <span>Their warm energy perfectly holds your quiet inner world.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strengths — horizontal scroll -->
+    <div class="detail-section-label">Strengths</div>
+    <div class="traits-scroll mb-20">
+      <div class="trait-card-h str"><div class="trait-lbl">STRENGTH 01</div><div class="trait-text">Exceptional emotional attunement — you feel what others can't name</div></div>
+      <div class="trait-card-h str"><div class="trait-lbl">STRENGTH 02</div><div class="trait-text">Creatively resolves conflict by finding unexpected common ground</div></div>
+      <div class="trait-card-h str"><div class="trait-lbl">STRENGTH 03</div><div class="trait-text">Fiercely loyal — once you're in, you're all in</div></div>
+    </div>
+
+    <!-- Blind Spots — horizontal scroll -->
+    <div class="detail-section-label">Blind Spots</div>
+    <div class="traits-scroll">
+      <div class="trait-card-h blind"><div class="trait-lbl">BLINDSPOT 01</div><div class="trait-text">Tendency to idealize partners and overlook real flaws</div></div>
+      <div class="trait-card-h blind"><div class="trait-lbl">BLINDSPOT 02</div><div class="trait-text">Retreats inward during conflict instead of voicing needs</div></div>
+      <div class="trait-card-h blind"><div class="trait-lbl">BLINDSPOT 03</div><div class="trait-text">Needs a very long time to heal after heartbreak</div></div>
+    </div>
+  </div>
+
+  <div id="tab-let" class="tab-panel hidden">
+    <div class="love-letter">
+      Dear you,<br><br>
+      You love in silence — quietly, completely, often invisibly. You give your best softness to others and swallow your own ache at night.<br><br>
+      Your love is an unsigned poem, written somewhere only the right person will ever find. You hold back because you've been hurt before. But when you finally decide to love — that love is enough to warm an entire universe.<br><br>
+      Don't ever apologize for feeling too much. That sensitivity is how you see the world.
+    </div>
+    <div class="letter-footer">
+      <span class="letter-sig">— Blink, 2025</span>
+      <button onclick="tgShare()" class="letter-share-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.613c-.144.655-.54.812-1.094.506l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L7.48 14.618l-2.95-.924c-.641-.2-.654-.641.136-.948l11.532-4.448c.533-.194 1.001.13.828.95h-.464z"/></svg>
+        Share this letter
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<!-- S7 DUAL -->
+<section class="screen" id="s-dual">
+
+  <div class="dual-header">
+    <div class="page-tag">Compatibility</div>
+    <h2 class="page-title" style="margin-bottom:0;">Two codes.<br>One truth.</h2>
+  </div>
+
+  <!-- Payment error banner -->
+  <div id="dualPayError" style="display:none;margin:0 20px 16px;padding:12px 16px;border-radius:12px;background:rgba(220,50,50,0.12);border:1px solid rgba(220,50,50,0.25);color:rgba(255,120,120,0.9);font-size:13px;line-height:1.4;"></div>
+
+  <!-- Code input area -->
+  <div class="dual-input-wrap">
+    <div class="dual-section-lbl a">Person A</div>
+    <div class="code-input-group">
+      <input type="text" class="code-input" id="codeA" placeholder="BLINK-XXXXXX" maxlength="13"
+        oninput="onCodeInput(this,'planetA')">
+      <span class="fill-mine-tag" onclick="fillMyCode()">Fill mine</span>
+    </div>
+
+    <div class="dual-divider-row">
+      <div class="dual-divider-line"></div>
+      <button class="dual-swap-btn" onclick="swapCodes()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+      </button>
+      <div class="dual-divider-line"></div>
+    </div>
+
+    <div class="dual-section-lbl b">Person B</div>
+    <div class="code-input-group">
+      <input type="text" class="code-input b-inp" id="codeB" placeholder="BLINK-XXXXXX" maxlength="13"
+        oninput="onCodeInput(this,'planetB')">
+    </div>
+  </div>
+
+  <div class="dual-cta-wrap">
+    <button class="btn-primary dual-cta" onclick="checkCompat()" id="compatBtn" disabled>
+      Match →
+    </button>
+  </div>
+
+  <!-- History -->
+  <div class="history-section" id="historySection">
+    <div class="history-label">History</div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">No readings yet</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- S9 REPORT -->
+<section class="screen" id="s-report">
+
+  <!-- Hero — duel layout -->
+  <div class="report-hero">
+
+    <!-- Two-person duel: card | score | card -->
+    <div class="report-duel-row">
+      <div class="report-duel-card a">
+        <div class="report-duel-mbti">INFP</div>
+        <div class="report-duel-name">The Grounded<br>Rose</div>
+      </div>
+      <div class="report-duel-score">
+        <div class="report-score-big">88%</div>
+        <div class="report-score-label">MATCH</div>
+        <div class="report-x">vs</div>
+      </div>
+      <div class="report-duel-card b">
+        <div class="report-duel-mbti">ENFJ</div>
+        <div class="report-duel-name">The<br>Protagonist</div>
+      </div>
+    </div>
+
+    <!-- UID pill -->
+    <div class="report-uid-pill">
+      <span class="report-uid-code">BLINK-7K3M2P × BLINK-4R9FXQ</span>
+      <span class="report-uid-dot"></span>
+      <span class="report-uid-date">Mar 2025</span>
+    </div>
+
+    <!-- Gradient bar -->
+    <div class="report-bar-wrap"><div class="report-bar-fill"></div></div>
+
+    <!-- Tags -->
+    <div class="report-tags-row">
+      <div class="report-tag"><span class="report-tag-dot report-tag-dot--lime"></span>Complementary</div>
+      <div class="report-tag"><span class="report-tag-dot report-tag-dot--pink"></span>High Chemistry</div>
+      <div class="report-tag"><span class="report-tag-dot report-tag-dot--purple"></span>Growth Potential</div>
+    </div>
+
+  </div>
+
+  <!-- Body -->
+  <div class="report-body">
+
+    <!-- Core relationship energy -->
+    <div class="report-section">
+      <div class="report-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(120,80,220,0.55)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Core Relationship Energy
+      </div>
+      <p class="report-section-body">You two are a "still waters run deep" pairing. INFP's vast inner world meets ENFJ's innate ability to unlock it. The magic here is wordless understanding — no explanation needed.</p>
+    </div>
+
+    <!-- 4-dimension breakdown -->
+    <div class="report-section">
+      <div class="report-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(120,80,220,0.55)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Compatibility Breakdown
+      </div>
+      <div class="report-dims-inner">
+        <div class="report-dim-row">
+          <span class="report-dim-lbl">Emotional Resonance</span>
+          <div class="report-dim-track"><div class="report-dim-fill" style="width:88%"></div></div>
+          <span class="report-dim-val">88%</span>
+        </div>
+        <div class="report-dim-row">
+          <span class="report-dim-lbl">Communication</span>
+          <div class="report-dim-track"><div class="report-dim-fill" style="width:72%"></div></div>
+          <span class="report-dim-val">72%</span>
+        </div>
+        <div class="report-dim-row">
+          <span class="report-dim-lbl">Conflict Pattern</span>
+          <div class="report-dim-track"><div class="report-dim-fill" style="width:65%"></div></div>
+          <span class="report-dim-val">65%</span>
+        </div>
+        <div class="report-dim-row">
+          <span class="report-dim-lbl">Long-term Potential</span>
+          <div class="report-dim-track"><div class="report-dim-fill" style="width:91%"></div></div>
+          <span class="report-dim-val">91%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth edges -->
+    <div class="report-section">
+      <div class="report-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(120,80,220,0.55)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Growth Edges
+      </div>
+      <div class="scene-cards">
+        <div class="scene-card">
+          <div class="scene-label">SCENE 01 · SILENCE</div>
+          <p class="scene-body">When things get heavy, INFP goes quiet. ENFJ reads silence as rejection and pushes harder. The more ENFJ talks, the deeper INFP retreats.</p>
+          <div class="report-tip" style="margin-top:10px;">
+            <span>→</span><span>Give INFP 20 minutes before re-engaging. Say it out loud: "I'll be here when you're ready."</span>
+          </div>
+        </div>
+        <div class="scene-card">
+          <div class="scene-label">SCENE 02 · FEEDBACK</div>
+          <p class="scene-body">ENFJ gives detailed feedback with good intentions. INFP hears criticism, not care — and internalizes it for days without saying a word.</p>
+          <div class="report-tip" style="margin-top:10px;">
+            <span>→</span><span>ENFJ: lead with "I noticed…" not "You always…". One observation at a time.</span>
+          </div>
+        </div>
+        <div class="scene-card">
+          <div class="scene-label">SCENE 03 · NEEDS</div>
+          <p class="scene-body">INFP expects to be understood without asking. ENFJ can't read minds and feels shut out. Both end up disappointed in the same silence.</p>
+          <div class="report-tip" style="margin-top:10px;">
+            <span>→</span><span>INFP: practice one sentence — "I need some quiet time, not distance."</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Love languages -->
+    <div class="report-section">
+      <div class="report-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(120,80,220,0.38)" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        Love Languages
+      </div>
+      <div class="report-lang-grid">
+        <div class="report-lang-card">
+          <div class="report-lang-type txt-infp">INFP</div>
+          <div class="report-lang-name">Quality Time</div>
+          <div class="report-lang-sub">Presence over words</div>
+        </div>
+        <div class="report-lang-card">
+          <div class="report-lang-type txt-enfj">ENFJ</div>
+          <div class="report-lang-name">Words of Affirmation</div>
+          <div class="report-lang-sub">Needs to hear it out loud</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Letter to the pair -->
+    <div class="report-letter">
+      You found each other in a sea of noise.<br><br>
+      INFP will love quietly — in gestures, in patience, in the way they remember everything ENFJ said in passing. ENFJ will love loudly — pulling INFP out of their inner world, making them feel seen in front of others for the first time.<br><br>
+      This is the rare kind. The kind that teaches both of you what you were missing.
+    </div>
+
+  </div>
+</section>
+
+</div><!-- /app -->
+
+<!-- BOTTOM NAV -->
+
+<!-- S-PAYWALL: 付费重测提示页 -->
+<section class="screen" id="s-paywall">
+  <div class="page-tag">Retest</div>
+  <h2 class="page-title">You've used your<br>free readings</h2>
+  <p style="font-size:15px; color:rgba(255,255,255,0.55); font-family:var(--f-sans); line-height:1.7; margin:0 0 32px;">
+    Each reading is generated fresh by GPT-4o just for you.<br>
+    Unlock another for 25 Stars.
+  </p>
+  <div style="background:rgba(120,80,220,0.08); border:1px solid rgba(120,80,220,0.2); border-radius:18px; padding:20px 22px; margin:0 0 28px;">
+    <div style="font-size:13px; color:rgba(255,255,255,0.4); font-family:var(--f-mono); letter-spacing:.06em; margin-bottom:8px;">WHAT YOU GET</div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.75); font-family:var(--f-sans); line-height:1.8;">
+      ✦ New BLINK Code<br>
+      ✦ Fresh GPT-4o profile<br>
+      ✦ Updated radar &amp; EQ score
+    </div>
+  </div>
+  <button class="btn-primary" onclick="startRetestPayment()" style="margin-bottom:14px;">
+    Unlock for 25 Stars ✦
+  </button>
+  <button onclick="go('s-landing')" style="width:100%; padding:12px; background:none; border:none; color:rgba(255,255,255,0.3); font-size:13px; font-family:var(--f-sans); cursor:pointer;">
+    Maybe later
+  </button>
+</section>
+
+<div class="bnav">
+  <button class="bnav-item" id="bMe" onclick="go('s-result');setNav('bMe')">
+    <span class="bnav-icon">👤</span><span class="bnav-lbl">ME</span>
+  </button>
+  <button class="bnav-item active" id="bDual" onclick="go('s-dual');setNav('bDual')">
+    <span class="bnav-icon">💫</span><span class="bnav-lbl">DUAL</span>
+  </button>
+</div>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
